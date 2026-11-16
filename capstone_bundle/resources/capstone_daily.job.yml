@@ -1,0 +1,31 @@
+resources:
+  jobs:
+    capstone_daily:
+      name: capstone_daily
+      tasks:
+        - task_key: bronze_ingest
+          disabled: false
+          email_notifications: {}
+          notebook_task:
+            notebook_path: ../src/capstone_daily/31_bronze_job.ipynb
+            source: WORKSPACE
+          run_if: ALL_SUCCESS
+          timeout_seconds: 0
+          webhook_notifications: {}
+        - task_key: silver_gold_pipeline
+          depends_on:
+            - task_key: bronze_ingest
+          disabled: false
+          email_notifications: {}
+          pipeline_task:
+            pipeline_id: c18454c9-b631-43d5-8597-c78483c7d922
+          run_if: ALL_SUCCESS
+          timeout_seconds: 0
+      email_notifications:
+        no_alert_for_skipped_runs: false
+      max_concurrent_runs: 1
+      performance_target: PERFORMANCE_OPTIMIZED
+      queue:
+        enabled: true
+      timeout_seconds: 0
+      webhook_notifications: {}
